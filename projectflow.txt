@@ -8,7 +8,7 @@
    Do "pip install -r requirements.txt"
 4. Do a "pip list" on terminal to make sure you have local packages installed.
 -------------------------------------- logging, exception and notebooks --------------------------------------
-14. Write the logger file and test it on demo.py
-15. Write the exception file and test it on demo.py
+14. Write the logger file and test it on demo_logger.py
+15. Write the exception file and test it on demo_exception.py
 
 
