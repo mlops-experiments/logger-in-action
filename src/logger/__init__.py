@@ -1,0 +1,64 @@
+# import built-in modules
+
+import logging
+import os
+from logging.handlers import RotatingFileHandler
+from from_root import from_root
+from datetime import datetime
+from pathlib import Path
+
+# Constants for log configuration
+LOG_DIR = 'logs'
+LOG_FILE = f"{datetime.now().strftime('%m_%d_%Y_%H_%M_%S')}.log"
+MAX_LOG_SIZE = 5 * 1024 * 1024  # 5 MB
+BACKUP_COUNT = 3  # Number of backup log files to keep
+
+# # Construct log file path
+log_dir_path = os.path.join(from_root(), LOG_DIR)
+os.makedirs(log_dir_path, exist_ok=True)
+log_file_path = os.path.join(log_dir_path, LOG_FILE)
+
+# Don’t have from-root? Replace those two lines with pathlib
+# project_root = Path(__file__).resolve().parents[2]  # adjust to your structure
+# log_dir_path = project_root / LOG_DIR
+# log_dir_path.mkdir(parents=True, exist_ok=True)
+# log_file_path = log_dir_path / LOG_FILE
+
+print(f"Log directory path: {log_dir_path}")
+
+
+def configure_logger():
+    """
+    Configures logging with a rotating file handler and a console handler.
+    """
+    # Create a custom logger
+    logger = logging.getLogger()
+    if logger.handlers:
+        logger.handlers.clear() # Clear existing handlers to avoid duplicate logs
+    logger.setLevel(logging.DEBUG)
+    
+    # Define formatter
+    formatter = logging.Formatter("[ %(asctime)s ] %(name)s - %(levelname)s - %(message)s")
+
+    # File handler with rotation
+    file_handler = RotatingFileHandler(log_file_path, maxBytes=MAX_LOG_SIZE, backupCount=BACKUP_COUNT)
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.DEBUG)
+    
+    # Console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    console_handler.setLevel(logging.INFO)
+    
+    # Add handlers to the logger
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+
+# Configure the logger
+configure_logger()
+
+logging.debug("This is a debug message.")
+logging.info("This is an info message.")
+logging.warning("This is a warning message.")
+logging.error("This is an error message.")
+logging.critical("This is a critical message.")
